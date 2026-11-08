@@ -26,10 +26,13 @@
   let heroEngine = null;
   if (window.FadaiOrb && starsEl && orbEl) {
     new window.FadaiOrb.Starfield(starsEl, 240);
+    const wide = window.innerWidth > 1024;
     heroEngine = new window.FadaiOrb.OrbEngine(orbEl, {
       count: 1700,
       mode: 'orb',
-      zoom: 1.08,
+      zoom: wide ? 0.95 : 0.44,
+      cxf: wide ? 0.71 : 0.5,
+      cyf: wide ? 0.46 : 0.97,   // desktop: bloom beside the headline · mobile: below the buttons
       pointerEl: window
     });
 

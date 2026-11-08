@@ -51,6 +51,8 @@
       this.t = 0;
       this.pitch = opts.pitch === undefined ? -0.22 : opts.pitch;
       this.zoom = opts.zoom || 1;
+      this.cxf = opts.cxf === undefined ? 0.5 : opts.cxf;
+      this.cyf = opts.cyf === undefined ? 0.5 : opts.cyf;
       this.analyser = null;
       this.freq = null;
       this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -240,7 +242,7 @@
       const W = this.W, H = this.H;
       ctx.clearRect(0, 0, W, H);
 
-      const cx = W / 2, cy = H / 2;
+      const cx = W * this.cxf, cy = H * this.cyf;
       const R = Math.min(W, H) * 0.34 * this.zoom;
       let energy = 0;
       for (let i = 0; i < BANDS; i++) energy += this.spectrum[i];
