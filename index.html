@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fadai Universe — your music, given a body</title>
+<meta name="description" content="Fadai Universe is a music-reactive screen creature for macOS and Windows. Open your player and a small orb appears; play music and step away, and the screen becomes a sea of sound. Runs 100% locally.">
+<meta name="theme-color" content="#05060b">
+<meta property="og:title" content="Fadai Universe — your music, given a body">
+<meta property="og:description" content="A living screen creature that dances with your music. Orb, whale, jellyfish — three forms, born from sound.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/cover.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='none' stroke='%23C49A3C' stroke-width='1.2'/><circle cx='16' cy='16' r='5' fill='%23FFD98A'/></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <a class="nav__mark" href="#top" aria-label="Fadai Universe">
+    <span class="nav__dot"></span>
+    <span class="nav__name">Fadai&nbsp;Universe</span>
+    <span class="nav__cn">发呆音宇宙</span>
+  </a>
+  <nav class="nav__links">
+    <a href="#concept">Concept</a>
+    <a href="#forms">Forms</a>
+    <a href="#gallery">Screens</a>
+    <a href="#download" class="nav__cta">Download</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ───────────────────────────── hero ───────────────────────────── -->
+  <section class="hero" id="top">
+    <canvas class="hero__stars" id="stars" aria-hidden="true"></canvas>
+    <canvas class="hero__orb" id="heroOrb" aria-hidden="true"></canvas>
+
+    <div class="hero__inner">
+      <p class="eyebrow reveal">v1.0.0 &nbsp;·&nbsp; macOS 11+ &amp; Windows 10/11 &nbsp;·&nbsp; runs entirely offline</p>
+      <h1 class="hero__title reveal" data-d="1">Fadai<br>Universe</h1>
+      <p class="hero__cn reveal" data-d="2">发呆音宇宙</p>
+      <p class="hero__lede reveal" data-d="3">
+        A living screen creature that dances with your music.<br>
+        Open a player — a small orb appears in the corner.<br>
+        Play something, step away, and the screen becomes a sea of sound.
+      </p>
+      <div class="hero__cta reveal" data-d="4">
+        <a class="btn btn--solid" href="#download">Download for free</a>
+        <a class="btn btn--ghost" href="#forms">See it move</a>
+      </div>
+    </div>
+
+    <div class="hero__foot reveal" data-d="5">
+      <span>Scroll</span>
+      <i></i>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── concept ───────────────────────────── -->
+  <section class="concept" id="concept">
+    <div class="wrap">
+      <p class="label reveal">01 &nbsp;/&nbsp; Concept</p>
+      <h2 class="display reveal" data-d="1">
+        Three seconds of nothing<br>
+        is all it takes.
+      </h2>
+      <p class="lede reveal" data-d="2">
+        Daydreaming is not a break from listening — it is the deepest part of it.
+        Fadai Universe gives that moment a body: your music, rendered as something
+        alive, breathing on the screen in front of you.
+      </p>
+
+      <ol class="steps">
+        <li class="step reveal">
+          <span class="step__n">i</span>
+          <h3>You press play</h3>
+          <p>Any bound player — NetEase Cloud Music, QQ Music, Spotify, Apple Music. No setup, no account, no plugins.</p>
+        </li>
+        <li class="step reveal" data-d="1">
+          <span class="step__n">ii</span>
+          <h3>A small orb appears</h3>
+          <p id="step2">It floats in the corner of your desktop, swelling softly with the low end of whatever is playing. You can drag it anywhere.</p>
+        </li>
+        <li class="step reveal" data-d="2">
+          <span class="step__n">iii</span>
+          <h3>Then it takes the screen</h3>
+          <p>Music playing, computer idle for a minute — fullscreen, unprompted. Sound becomes light, and light becomes something that swims.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── forms ───────────────────────────── -->
+  <section class="forms" id="forms">
+    <div class="wrap">
+      <p class="label reveal">02 &nbsp;/&nbsp; Living forms</p>
+      <h2 class="display reveal" data-d="1">One body, three moods.</h2>
+      <p class="lede reveal" data-d="2">
+        The same particles, rearranged by the music. Move your cursor across the
+        stage to tilt it — the instrument below is the real renderer, running live.
+      </p>
+    </div>
+
+    <div class="stage reveal" data-d="3">
+      <canvas id="orbDemo" aria-hidden="true"></canvas>
+
+      <div class="stage__tabs" role="tablist" aria-label="Visualization form">
+        <button class="chip is-active" data-mode="orb" role="tab" aria-selected="true">Orb</button>
+        <button class="chip" data-mode="whale" role="tab" aria-selected="false">Whale</button>
+        <button class="chip" data-mode="jelly" role="tab" aria-selected="false">Jellyfish</button>
+      </div>
+
+      <button class="mic" id="micBtn" type="button">
+        <span class="mic__dot"></span>
+        <span class="mic__label">Let your own music drive it</span>
+      </button>
+
+      <p class="stage__note" id="stageNote">Rendering in real time · synthetic beat</p>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── gallery ───────────────────────────── -->
+  <section class="gallery" id="gallery">
+    <div class="wrap">
+      <p class="label reveal">03 &nbsp;/&nbsp; Screens</p>
+      <h2 class="display reveal" data-d="1">What fullscreen feels like.</h2>
+    </div>
+
+    <div class="shots">
+      <figure class="shot shot--wide reveal">
+        <img src="assets/img/cover.jpg" alt="Fadai Universe fullscreen orb visualization" loading="lazy">
+        <figcaption><b>The orb</b> — a core of sound, radiating outward in colour.</figcaption>
+      </figure>
+      <figure class="shot reveal" data-d="1">
+        <img src="assets/img/jelly.jpg" alt="Jellyfish visualization" loading="lazy">
+        <figcaption><b>Jellyfish</b> — slow drifts and long, trailing light.</figcaption>
+      </figure>
+      <figure class="shot reveal" data-d="2">
+        <img src="assets/img/whale.jpg" alt="Whale visualization" loading="lazy">
+        <figcaption><b>Whale</b> — a body crossing the starfield, breathing in bass.</figcaption>
+      </figure>
+      <figure class="shot shot--wide reveal">
+        <img src="assets/img/bind.jpg" alt="Player binding window" loading="lazy">
+        <figcaption><b>Binding</b> — pick your players once; the orb keeps its distance until you need it.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── details ───────────────────────────── -->
+  <section class="details" id="details">
+    <div class="wrap details__grid">
+      <div>
+        <p class="label reveal">04 &nbsp;/&nbsp; Details</p>
+        <h2 class="display reveal" data-d="1">Quiet in the<br>right places.</h2>
+        <p class="lede reveal" data-d="2">
+          No tray icon. No notifications. No "sign in to continue".
+          It watches one thing — whether a player you chose is running —
+          and otherwise stays out of the way.
+        </p>
+      </div>
+
+      <dl class="specs">
+        <div class="spec reveal">
+          <dt>Bind once</dt>
+          <dd>Choose one or several players on first launch. The orb appears only when one of them is open; right-click it to re-bind.</dd>
+        </div>
+        <div class="spec reveal" data-d="1">
+          <dt>Idle = invitation</dt>
+          <dd>Music playing and 60 seconds of no input → fullscreen. If it is already open in a window, it promotes itself.</dd>
+        </div>
+        <div class="spec reveal" data-d="2">
+          <dt>Leaving is deliberate</dt>
+          <dd>Moving the mouse will not throw you out. Exit with the ⛶ button or ESC — no accidental interruptions.</dd>
+        </div>
+        <div class="spec reveal" data-d="3">
+          <dt>Microphone, if you allow it</dt>
+          <dd>Ambient sound is analysed on-device for real-time spectrum. Nothing is recorded, nothing leaves the machine.</dd>
+        </div>
+        <div class="spec reveal" data-d="4">
+          <dt>Built on Electron + Three.js</dt>
+          <dd>Particle shaders, bloom post-processing, and a native Swift probe for player detection on macOS.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── download ───────────────────────────── -->
+  <section class="download" id="download">
+    <div class="wrap">
+      <p class="label reveal">05 &nbsp;/&nbsp; Download</p>
+      <h2 class="display reveal" data-d="1">Take it with you.</h2>
+      <p class="lede reveal" data-d="2">Free, unsigned builds. On macOS, right-click the app → Open the first time; on Windows, choose “More info → Run anyway”.</p>
+
+      <div class="cards">
+        <a class="card reveal" href="https://github.com/Dadudu-AI/fadai-universe/releases/download/v1.0.0/fadai-universe-1.0.0-arm64.dmg">
+          <span class="card__os">macOS · Apple Silicon</span>
+          <span class="card__file">fadai-universe-1.0.0-arm64.dmg</span>
+          <span class="card__meta">M1 – M4 &nbsp;·&nbsp; <span data-size="arm64">94 MB</span></span>
+          <span class="card__go">Download <i>↓</i></span>
+        </a>
+        <a class="card reveal" data-d="1" href="https://github.com/Dadudu-AI/fadai-universe/releases/download/v1.0.0/fadai-universe-1.0.0-x64.dmg">
+          <span class="card__os">macOS · Intel</span>
+          <span class="card__file">fadai-universe-1.0.0-x64.dmg</span>
+          <span class="card__meta">x86_64 &nbsp;·&nbsp; <span data-size="x64">98 MB</span></span>
+          <span class="card__go">Download <i>↓</i></span>
+        </a>
+        <a class="card reveal" data-d="2" href="https://github.com/Dadudu-AI/fadai-universe/releases/download/v1.0.0/fadai-universe-Setup-1.0.0.exe">
+          <span class="card__os">Windows 10 / 11</span>
+          <span class="card__file">fadai-universe-Setup-1.0.0.exe</span>
+          <span class="card__meta">x64 &nbsp;·&nbsp; <span data-size="win">161 MB</span></span>
+          <span class="card__go">Download <i>↓</i></span>
+        </a>
+      </div>
+
+      <p class="download__alt reveal">
+        Prefer to build it yourself?
+        <a href="https://github.com/Dadudu-AI/fadai-universe">Clone the source on GitHub ↗</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot__row">
+    <span class="foot__mark">Fadai Universe · 发呆音宇宙</span>
+    <nav>
+      <a href="https://github.com/Dadudu-AI/fadai-universe">App source</a>
+      <a href="https://github.com/Dadudu-AI/fadai-universe-site">This site's source</a>
+      <a href="https://github.com/Dadudu-AI/fadai-universe/releases">Releases</a>
+    </nav>
+  </div>
+  <p class="foot__fine">Made for people who stare out of windows. Nothing is uploaded, ever.</p>
+</footer>
+
+<script src="js/orb.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
