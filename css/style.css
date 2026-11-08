@@ -370,6 +370,32 @@ section { position: relative; z-index: 1; }
 .card__go i { font-style: normal; transition: transform 0.5s var(--ease); }
 .card:hover .card__go i { transform: translateY(3px); }
 
+/* copyable app download address */
+.dlurl {
+  margin: clamp(26px, 4vh, 40px) 0 0;
+  display: inline-flex; align-items: center; gap: clamp(12px, 1.6vw, 20px); flex-wrap: wrap;
+  padding: 12px 12px 12px 22px;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: rgba(255, 255, 255, 0.022);
+}
+.dlurl__label { font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); }
+.dlurl__value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px; color: var(--gold-lt);
+  border-bottom: 1px dashed rgba(232, 199, 126, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+.dlurl__value:hover { border-bottom-color: var(--gold-lt); }
+.dlurl__copy {
+  appearance: none; border: 1px solid var(--line-2); background: transparent;
+  color: var(--ink-2); font-family: var(--sans); font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 8px 15px; border-radius: 999px; cursor: pointer;
+  transition: color 0.3s, border-color 0.3s;
+}
+.dlurl__copy:hover { color: var(--gold-lt); border-color: var(--gold); }
+.dlurl__copy.is-done { color: #7CF5A6; border-color: rgba(124, 245, 166, 0.5); }
+
 .download__alt { margin: clamp(30px, 4vh, 46px) 0 0; font-size: 13.5px; color: var(--ink-3); }
 .download__alt a { color: var(--gold-lt); border-bottom: 1px solid rgba(232, 199, 126, 0.3); padding-bottom: 2px; }
 .download__alt a:hover { border-color: var(--gold-lt); }
@@ -396,6 +422,12 @@ section { position: relative; z-index: 1; }
   .shot--wide { grid-column: auto; }
   .stage__note { display: none; }
   .hero__foot { display: none; }
+}
+
+@media (max-width: 640px) {
+  .dlurl { display: flex; width: 100%; border-radius: 18px; padding: 16px 18px; gap: 8px 12px; }
+  .dlurl__value { word-break: break-all; font-size: 12px; }
+  .dlurl__copy { margin-left: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {

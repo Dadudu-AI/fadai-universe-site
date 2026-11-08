@@ -104,6 +104,30 @@
     }
   });
 
+  /* ── copy the app download address ─────────────────────────────────── */
+  const copyBtn = $('#copyDl');
+  const dlUrl = $('#dlUrl');
+  copyBtn && copyBtn.addEventListener('click', async () => {
+    const text = dlUrl.textContent.trim();
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (err) {
+      const r = document.createRange();
+      r.selectNodeContents(dlUrl);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      document.execCommand && document.execCommand('copy');
+      sel.removeAllRanges();
+    }
+    copyBtn.textContent = 'Copied';
+    copyBtn.classList.add('is-done');
+    setTimeout(() => {
+      copyBtn.textContent = 'Copy';
+      copyBtn.classList.remove('is-done');
+    }, 1800);
+  });
+
   /* ── subtle parallax on gallery images ────────────────────────────── */
   const shots = $$('.shot img');
   if (shots.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
