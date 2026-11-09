@@ -12,19 +12,30 @@ screen creature for macOS and Windows.
 
 ## What is it
 
-A single-page site built around a live particle renderer — not a video, not a GIF.
-The hero orb and the interactive "three forms" stage are the real visualizer logic
-reimplemented in ~450 lines of vanilla canvas, so the page stays a few hundred
-kilobytes and runs at 60 fps without a framework.
+A single-page site that shows the product by running it. The hero orb and the
+"three living forms" stage are the app's own Three.js visualizer, vendored into
+`viz/` and embedded as a screen-blended iframe — same geometry, same shaders, same
+bloom, same motion as the desktop app. No re-creation, nothing approximated.
+
+How the embed works:
+
+- `viz/app.html` is a copy of the app's visualizer with one added block: `?embed=1`
+  hides the app chrome, forwards `{fadaiMode}` / `{fadaiMic}` messages from the page,
+  and picks its audio source.
+- Browsers refuse audio before a gesture, so the embed starts on a synthetic
+  spectrum shaped like the app's usual input (strong bass band, ~47 bpm pulse) and
+  switches to the bundled `viz/loop.mp3` the moment the visitor interacts.
+- `.viz { mix-blend-mode: screen }` + a radial mask melts the visualizer's dark stage
+  into the page, so there is no visible rectangle.
 
 Highlights:
 
-- **Live canvas engine** — 1,700 particles (hero) / 2,100 (stage), morphed between
-  orb, whale and jellyfish by interpolating three parametric point clouds.
-- **Two drivers** — a procedural spectrum when idle, or the visitor's own microphone
-  (`getUserMedia` + `AnalyserNode`, 26 log-spaced bands, processed on-device only).
+- **The app's renderer, live** — no video, no GIF, no 1 MB of images.
+- **Interactive stage** — the chips switch the app's real modes (1 primordial /
+  2 whale / 4 jellyfish) over `postMessage`; the mic button triggers the app's own
+  `getUserMedia` path.
 - **No build step, no dependencies.** Open `index.html` and it works.
-- Scroll-reveal typography, cursor-parallax, grain overlay, and
+- Scroll-reveal typography, gallery parallax, grain overlay, and
   `prefers-reduced-motion` support.
 
 ## Structure
@@ -32,10 +43,16 @@ Highlights:
 ```
 index.html          markup + copy
 css/style.css       all styling (no framework)
-js/orb.js           particle engine: OrbEngine + Starfield
-js/main.js          reveals, nav state, form switching, microphone wiring
+js/main.js          reveals, nav state, chips → postMessage, downloads
+viz/app.html        the app's visualizer + embed bootstrap (?embed=1)
+viz/lib/            three.js + post-processing shaders (from the app)
+viz/loop.mp3        28 s ambient loop that drives the real spectrum
 assets/img/*.jpg    real product screenshots (1600px, optimised)
 ```
+
+`viz/` is a vendored copy of `Dadudu-AI/fadai-universe` (`index.html` + `lib/`).
+If the app's visualizer changes, re-copy those files and re-apply the embed block —
+that block is the only difference.
 
 ## Run locally
 

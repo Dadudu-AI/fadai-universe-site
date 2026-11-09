@@ -1,4 +1,6 @@
-/* Fadai Universe — site behaviour */
+/* Fadai Universe — site behaviour
+   The visualizer itself is the app's own code, vendored in /viz and embedded
+   as an iframe (screen-blended). This file only wires the page around it. */
 (function () {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -14,57 +16,46 @@
   }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
   $$('.reveal').forEach((el) => io.observe(el));
 
+  // safety net: if a browser throttles/defer the observer (heavy WebGL on the
+  // page can starve it), still show what is already on screen
+  setTimeout(() => {
+    $$('.reveal:not(.in)').forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight) el.classList.add('in');
+    });
+  }, 1600);
+
   /* ── nav stuck state ──────────────────────────────────────────────── */
   const nav = $('#nav');
   const onScrollNav = () => nav.classList.toggle('is-stuck', window.scrollY > 40);
   onScrollNav();
   window.addEventListener('scroll', onScrollNav, { passive: true });
 
-  /* ── hero: starfield + orb, fading out as you scroll past ─────────── */
-  const starsEl = $('#stars');
-  const orbEl = $('#heroOrb');
-  let heroEngine = null;
-  if (window.FadaiOrb && starsEl && orbEl) {
-    new window.FadaiOrb.Starfield(starsEl, 240);
-    // the canvas now has its own column, so the orb can never bleed over the copy
-    heroEngine = new window.FadaiOrb.OrbEngine(orbEl, {
-      count: 2000,
-      mode: 'orb',
-      zoom: 1.02,
-      pointerEl: window
-    });
+  /* ── the embedded app visualizer ──────────────────────────────────── */
+  const stageViz = $('#stageViz');
+  const note = $('#stageNote');
 
-    const fade = () => {
-      const h = Math.max(1, window.innerHeight);
-      const p = Math.min(1, window.scrollY / (h * 0.85));
-      orbEl.style.opacity = String(1 - p);
-      starsEl.style.opacity = String(0.9 - p * 0.55);
-    };
-    fade();
-    window.addEventListener('scroll', fade, { passive: true });
+  /* keep only what is on screen rendering: two three.js scenes at once is
+     wasteful, and the hero one is expensive on Retina screens */
+  const heroViz = $('.hero__stage .viz');
+  if (heroViz) {
+    const heroSrc = heroViz.getAttribute('src');
+    new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          if (!heroViz.getAttribute('src')) heroViz.setAttribute('src', heroSrc);
+        } else if (heroViz.getAttribute('src')) {
+          heroViz.removeAttribute('src'); // stops the WebGL loop entirely
+        }
+      }
+    }, { threshold: 0.02 }).observe(heroViz.parentElement);
   }
 
-  /* ── live stage: lazily started, three morphing forms ─────────────── */
-  const stage = $('.stage');
-  const demoEl = $('#orbDemo');
-  let demo = null;
-  let demoStarted = false;
+  const post = (msg) => {
+    if (stageViz && stageViz.contentWindow) stageViz.contentWindow.postMessage(msg, '*');
+  };
 
-  function startDemo() {
-    if (demoStarted || !demoEl || !window.FadaiOrb) return;
-    demoStarted = true;
-    demo = new window.FadaiOrb.OrbEngine(demoEl, { count: 2100, mode: 'orb', zoom: 0.8, cyf: 0.43, pitch: -0.16 });
-  }
-
-  if ('IntersectionObserver' in window && stage) {
-    new IntersectionObserver((entries, obs) => {
-      for (const e of entries) if (e.isIntersecting) { startDemo(); obs.disconnect(); }
-    }, { threshold: 0.25 }).observe(stage);
-  } else {
-    startDemo();
-  }
-
-  /* form chips */
+  /* form chips → tell the app which living form to render */
   $$('.chip').forEach((chip) => {
     chip.addEventListener('click', () => {
       $$('.chip').forEach((c) => {
@@ -72,34 +63,24 @@
         c.classList.toggle('is-active', on);
         c.setAttribute('aria-selected', String(on));
       });
-      if (demo) {
-        demo.setMode(chip.dataset.mode);
-        if (!micLive) note.textContent = `Rendering in real time · ${chip.textContent.trim().toLowerCase()}`;
-      }
+      post({ fadaiMode: chip.dataset.mode });
+      if (!micLive) note.textContent = `App visualizer · ${chip.textContent.trim().toLowerCase()} form`;
     });
   });
 
-  /* microphone */
+  /* microphone — the app's own capture path, driven through the iframe */
   const micBtn = $('#micBtn');
-  const micLabel = $('.mic__label');
-  const note = $('#stageNote');
+  const micLabel = micBtn && $('.mic__label', micBtn);
   let micLive = false;
 
-  micBtn && micBtn.addEventListener('click', async () => {
-    startDemo();
+  micBtn && micBtn.addEventListener('click', () => {
     if (micLive) return;
-    try {
-      micLabel.textContent = 'Listening…';
-      await demo.useMic();
-      micLive = true;
-      micBtn.classList.add('is-live');
-      micLabel.textContent = 'Microphone live';
-      note.textContent = 'Driven by your microphone · processed on this device';
-    } catch (err) {
-      micLabel.textContent = 'Microphone unavailable';
-      note.textContent = 'Mic access blocked — still rendering the synthetic beat';
-      setTimeout(() => { if (!micLive) micLabel.textContent = 'Let your own music drive it'; }, 2600);
-    }
+    micLabel.textContent = 'Listening…';
+    post({ fadaiMic: true });
+    micLive = true;
+    micBtn.classList.add('is-live');
+    micLabel.textContent = 'Microphone live';
+    note.textContent = 'Driven by your microphone · processed on this device';
   });
 
   /* ── hero CTA downloads the installer directly (no trip to a web page) ─ */

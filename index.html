@@ -35,8 +35,6 @@
 
   <!-- ───────────────────────────── hero ───────────────────────────── -->
   <section class="hero" id="top">
-    <canvas class="hero__stars" id="stars" aria-hidden="true"></canvas>
-
     <div class="hero__inner">
       <div class="hero__copy">
         <p class="eyebrow reveal">v1.0.0 &nbsp;·&nbsp; macOS 11+ &amp; Windows 10/11 &nbsp;·&nbsp; runs entirely offline</p>
@@ -54,7 +52,8 @@
       </div>
 
       <div class="hero__stage reveal" data-d="2">
-        <canvas id="heroOrb" aria-hidden="true"></canvas>
+        <iframe class="viz" src="viz/app.html?embed=1&mode=orb" title="Fadai Universe visualizer"
+                allow="microphone; autoplay" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
       </div>
     </div>
 
@@ -110,7 +109,8 @@
     </div>
 
     <div class="stage reveal" data-d="3">
-      <canvas id="orbDemo" aria-hidden="true"></canvas>
+      <iframe class="viz" id="stageViz" src="viz/app.html?embed=1&mode=orb" title="Fadai Universe visualizer — interactive"
+              loading="lazy" allow="microphone; autoplay" scrolling="no"></iframe>
 
       <div class="stage__tabs" role="tablist" aria-label="Visualization form">
         <button class="chip is-active" data-mode="orb" role="tab" aria-selected="true">Orb</button>
@@ -123,7 +123,7 @@
         <span class="mic__label">Let your own music drive it</span>
       </button>
 
-      <p class="stage__note" id="stageNote">Rendering in real time · synthetic beat</p>
+      <p class="stage__note" id="stageNote">The app's own renderer · running live</p>
     </div>
   </section>
 
@@ -246,7 +246,6 @@
   <p class="foot__fine">Made for people who stare out of windows. Nothing is uploaded, ever.</p>
 </footer>
 
-<script src="js/orb.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
