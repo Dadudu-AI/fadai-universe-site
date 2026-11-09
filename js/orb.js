@@ -129,7 +129,7 @@
         this.bo[i] = Math.min(BANDS - 1, Math.floor(((lonO + Math.PI) / TAU) * BANDS));
         this.bj[i] = Math.min(BANDS - 1, Math.floor(((lonJ + Math.PI) / TAU) * BANDS));
         this.bh[i] = Math.min(BANDS - 1, Math.floor(clamp((this.px[i * 3 + 2] + 1.75) / 3.5, 0, 0.999) * BANDS));
-        this.size[i] = 0.55 + Math.pow(rnd(), 2) * 1.7;
+        this.size[i] = 1.05 + Math.pow(rnd(), 2) * 1.55;
         this.jit[i] = rnd() * TAU;
         // 30% of the orb lives inside the shell so the core glows instead of hollowing out
         if (rnd() < 0.3) {
@@ -207,8 +207,8 @@
       }
       // synthetic "now playing" spectrum
       const t = this.t;
-      const beat = (t * 1.34) % 1;
-      const kick = Math.exp(-beat * 7);
+      const beat = (t * 0.62) % 1;
+      const kick = Math.exp(-beat * 4.4);
       for (let i = 0; i < BANDS; i++) {
         const floor = 0.16 + 0.06 * Math.sin(t * 0.7 + i * 0.9);
         const bass = Math.exp(-Math.pow((i - 3) / 3.6, 2)) * (0.46 + beat * 0.85);
@@ -217,7 +217,7 @@
         const wobble = 0.10 * Math.sin(t * 2.3 + i * 1.7) + 0.06 * Math.sin(t * 4.1 - i);
         this.spectrum[i] = clamp(floor + bass + mid + air + wobble + kick * 0.35 * Math.exp(-Math.pow((i - 1) / 2.5, 2)), 0, 1.7);
       }
-      if (kick > 0.86 && this.rings.length < 5) this._spawnRing(0.35 + kick * 0.5);
+      if (kick > 0.93 && this.rings.length < 3) this._spawnRing(0.3 + kick * 0.4);
     }
 
     _spawnRing(power) {
@@ -236,7 +236,7 @@
 
       this.mouse.x = lerp(this.mouse.x, this.mouse.tx, 0.06);
       this.mouse.y = lerp(this.mouse.y, this.mouse.ty, 0.06);
-      this.spin += dt * (this.mode === 'whale' ? 0.16 : 0.3);
+      this.spin += dt * (this.mode === 'whale' ? 0.09 : 0.15);
 
       const ctx = this.ctx;
       const W = this.W, H = this.H;
@@ -260,11 +260,11 @@
     }
 
     _drawGlow(ctx, cx, cy, R, energy) {
-      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 2.05);
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.5);
       const a = 0.06 + energy * 0.16;
-      g.addColorStop(0, `rgba(255,236,180,${a * 1.2})`);
-      g.addColorStop(0.22, `rgba(255,140,190,${a * 0.6})`);
-      g.addColorStop(0.48, `rgba(140,120,255,${a * 0.28})`);
+      g.addColorStop(0, `rgba(255,236,180,${a * 1.25})`);
+      g.addColorStop(0.3, `rgba(255,150,195,${a * 0.6})`);
+      g.addColorStop(0.62, `rgba(150,130,255,${a * 0.24})`);
       g.addColorStop(1, 'rgba(6,8,20,0)');
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
@@ -281,7 +281,7 @@
 
       ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.arc(cx, cy, R * 2.05, 0, TAU);
+      ctx.arc(cx, cy, R * 1.5, 0, TAU);
       ctx.fill();
       ctx.restore();
     }
@@ -307,8 +307,7 @@
         const rl = Math.sqrt(x * x + y * y + z * z) || 1;
         const breathe = 1 + Math.sin(t * 1.1 + this.jit[i]) * 0.012;
         // squared energy → sharp petals, plus barely-there idle breathing
-        const spike = 1 + (e * e * 0.46 + e * 0.06 + Math.sin(t * 2.4 + this.jit[i]) * 0.012) * breathe;
-        const bx = x, by = y, bz = z;
+        const spike = 1 + (e * e * 0.10 + e * 0.02 + Math.sin(t * 1.4 + this.jit[i]) * 0.008) * breathe;
         x = (x / rl) * rl * spike;
         y = (y / rl) * rl * spike;
         z = (z / rl) * rl * spike;
@@ -332,21 +331,6 @@
         const col = paletteAt((b / BANDS) * 0.92 + 0.08 * Math.sin(t * 0.4 + this.jit[i]));
         const size = this.size[i] * this.dpr * (0.5 + depth * 1.6) * (1 + e * 0.6);
         const rgba = `rgba(${col[0]},${col[1]},${col[2]},`;
-
-        // radial petal streak: base → tip, only where the music pushes
-        if (e > 0.28 && depth > 0.3 && rl > 0.72 && wO > 0.55) {
-          const obx1 = bx * cosY - bz * sinY;
-          const obz1 = bx * sinY + bz * cosY;
-          const oby1 = by * cosX - obz1 * sinX;
-          const obz2 = by * sinX + obz1 * cosX;
-          const p2 = 3.2 / (3.2 + obz2);
-          ctx.strokeStyle = rgba + clamp(alpha * 0.45, 0, 0.62) + ')';
-          ctx.lineWidth = Math.max(0.7, this.dpr * 0.9);
-          ctx.beginPath();
-          ctx.moveTo(cx + obx1 * R * p2, cy - oby1 * R * p2);
-          ctx.lineTo(sx, sy);
-          ctx.stroke();
-        }
 
         ctx.fillStyle = rgba + clamp(alpha, 0, 0.95) + ')';
         ctx.beginPath();

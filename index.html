@@ -36,20 +36,25 @@
   <!-- ───────────────────────────── hero ───────────────────────────── -->
   <section class="hero" id="top">
     <canvas class="hero__stars" id="stars" aria-hidden="true"></canvas>
-    <canvas class="hero__orb" id="heroOrb" aria-hidden="true"></canvas>
 
     <div class="hero__inner">
-      <p class="eyebrow reveal">v1.0.0 &nbsp;·&nbsp; macOS 11+ &amp; Windows 10/11 &nbsp;·&nbsp; runs entirely offline</p>
-      <h1 class="hero__title reveal" data-d="1">Fadai<br>Universe</h1>
-      <p class="hero__cn reveal" data-d="2">发呆音宇宙</p>
-      <p class="hero__lede reveal" data-d="3">
-        A living screen creature that dances with your music.<br>
-        Open a player — a small orb appears in the corner.<br>
-        Play something, step away, and the screen becomes a sea of sound.
-      </p>
-      <div class="hero__cta reveal" data-d="4">
-        <a class="btn btn--solid" href="https://github.com/Dadudu-AI/fadai-universe/releases/latest" target="_blank" rel="noopener">Download the app <span aria-hidden="true">↓</span></a>
-        <a class="btn btn--ghost" href="#download">All downloads</a>
+      <div class="hero__copy">
+        <p class="eyebrow reveal">v1.0.0 &nbsp;·&nbsp; macOS 11+ &amp; Windows 10/11 &nbsp;·&nbsp; runs entirely offline</p>
+        <h1 class="hero__title reveal" data-d="1">Fadai<br>Universe</h1>
+        <p class="hero__cn reveal" data-d="2">发呆音宇宙</p>
+        <p class="hero__lede reveal" data-d="3">
+          A living screen creature that dances with your music.<br>
+          Open a player — a small orb appears in the corner.<br>
+          Play something, step away, and the screen becomes a sea of sound.
+        </p>
+        <div class="hero__cta reveal" data-d="4">
+          <a class="btn btn--solid" id="dlHero" href="#download" rel="noopener">Download the app <span aria-hidden="true">↓</span></a>
+          <a class="btn btn--ghost" href="#download">All downloads</a>
+        </div>
+      </div>
+
+      <div class="hero__stage reveal" data-d="2">
+        <canvas id="heroOrb" aria-hidden="true"></canvas>
       </div>
     </div>
 

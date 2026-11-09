@@ -26,13 +26,11 @@
   let heroEngine = null;
   if (window.FadaiOrb && starsEl && orbEl) {
     new window.FadaiOrb.Starfield(starsEl, 240);
-    const wide = window.innerWidth > 1024;
+    // the canvas now has its own column, so the orb can never bleed over the copy
     heroEngine = new window.FadaiOrb.OrbEngine(orbEl, {
-      count: 1700,
+      count: 2000,
       mode: 'orb',
-      zoom: wide ? 0.95 : 0.44,
-      cxf: wide ? 0.71 : 0.5,
-      cyf: wide ? 0.46 : 0.97,   // desktop: bloom beside the headline · mobile: below the buttons
+      zoom: 1.02,
       pointerEl: window
     });
 
@@ -55,7 +53,7 @@
   function startDemo() {
     if (demoStarted || !demoEl || !window.FadaiOrb) return;
     demoStarted = true;
-    demo = new window.FadaiOrb.OrbEngine(demoEl, { count: 2100, mode: 'orb', zoom: 0.92, pitch: -0.16 });
+    demo = new window.FadaiOrb.OrbEngine(demoEl, { count: 2100, mode: 'orb', zoom: 0.8, cyf: 0.43, pitch: -0.16 });
   }
 
   if ('IntersectionObserver' in window && stage) {
@@ -103,6 +101,40 @@
       setTimeout(() => { if (!micLive) micLabel.textContent = 'Let your own music drive it'; }, 2600);
     }
   });
+
+  /* ── hero CTA downloads the installer directly (no trip to a web page) ─ */
+  const REL = 'https://github.com/Dadudu-AI/fadai-universe/releases/download/v1.0.0/';
+  const dlHero = $('#dlHero');
+  if (dlHero) {
+    const pick = (arch) => {
+      const ua = navigator.userAgent;
+      if (/Windows/i.test(ua)) return ['fadai-universe-Setup-1.0.0.exe', 'Download for Windows'];
+      if (/Macintosh|Mac OS X/i.test(ua)) {
+        const intel = arch === 'x86';
+        return [
+          intel ? 'fadai-universe-1.0.0-x64.dmg' : 'fadai-universe-1.0.0-arm64.dmg',
+          intel ? 'Download for Mac (Intel)' : 'Download for Mac'
+        ];
+      }
+      return [null, null];
+    };
+
+    const apply = (arch) => {
+      const [file, label] = pick(arch);
+      if (!file) return; // unknown platform → keep the in-page download section
+      dlHero.href = REL + file;
+      dlHero.setAttribute('download', '');
+      dlHero.removeAttribute('target');
+      dlHero.innerHTML = label + ' <span aria-hidden="true">↓</span>';
+    };
+
+    apply(null); // sensible default before the async arch probe resolves
+    if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+      navigator.userAgentData.getHighEntropyValues(['architecture'])
+        .then((d) => apply(d.architecture))
+        .catch(() => {});
+    }
+  }
 
   /* ── copy the app download address ─────────────────────────────────── */
   const copyBtn = $('#copyDl');
